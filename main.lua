@@ -4,7 +4,9 @@ function love.load()
     y = 295,
     width = 10,
     height = 10,
-    color = {255, 255, 255}
+    color = {255, 255, 255},
+    speedX = 100,
+    speedY = 100
   }
 
   net = {
@@ -20,6 +22,11 @@ function love.load()
     player2 = 0,
     font = love.graphics.newFont(30)
   }
+end
+
+function love.update(dt)
+  ball.x = ball.x + ball.speedX * dt
+  ball.y = ball.y + ball.speedY * dt
 end
 
 function love.draw()
@@ -47,9 +54,9 @@ function drawScores()
 
   -- player 1
   local width = score.font:getWidth(score.player1)
-  love.graphics.printf(score.player1, 0, 10, 395 - width, 'right')
+  love.graphics.printf(score.player1, 0, 10, 350, 'right')
 
   -- player 2
   width = score.font:getWidth(score.player2)
-  love.graphics.printf(score.player2, 405 + width, 10, 395 - width, 'left')
+  love.graphics.printf(score.player2, 450, 10, 350, 'left')
 end

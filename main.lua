@@ -5,8 +5,8 @@ function love.load()
     width = 10,
     height = 10,
     color = {255, 255, 255},
-    speedX = 100,
-    speedY = 100
+    speedX = -100,
+    speedY = -100
   }
 
   net = {
@@ -27,6 +27,10 @@ end
 function love.update(dt)
   ball.x = ball.x + ball.speedX * dt
   ball.y = ball.y + ball.speedY * dt
+
+  if ball.y + ball.height > 600 or ball.y < 0 then
+    ball.speedY = ball.speedY * -1
+  end
 end
 
 function love.draw()

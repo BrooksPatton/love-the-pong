@@ -61,6 +61,11 @@ function love.update(dt)
     ball.x = paddle1.x + paddle1.width
   end
 
+  if ball.x + ball.width > paddle2.x and ball.y > paddle2.y and ball.y < paddle2.y + paddle2.height then
+    ball.speedX = ball.speedX * -1
+    ball.x = paddle2.x - paddle2.width
+  end
+
   if paddle1.direction == 'up' and paddle1.y > 0 then
     paddle1.y = paddle1.y - paddle1.speed * dt
   elseif paddle1.direction == 'down' and paddle1.y + paddle1.height < 600 then
@@ -123,11 +128,11 @@ function moveAIPaddle(dt)
   local middleOfBall = ball.y + (ball.height / 2)
   local middleOfPlayer2Paddle = paddle2.y + (paddle2.height / 2)
   local distanceDelta = math.abs(middleOfPlayer2Paddle - middleOfBall)
-  local speed = math.min(distanceDelta, paddle2.speed * dt)
+  local movement = math.min(distanceDelta, paddle2.speed * dt)
 
   if middleOfBall > middleOfPlayer2Paddle and paddle2.y + paddle2.height < 600 then
-    paddle2.y = paddle2.y + speed
+    paddle2.y = paddle2.y + movement
   elseif middleOfBall < middleOfPlayer2Paddle and paddle2.y > 0 then
-    paddle2.y = paddle2.y - speed
+    paddle2.y = paddle2.y - movement
   end
 end

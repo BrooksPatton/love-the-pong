@@ -36,7 +36,9 @@ function love.load()
     x = 780,
     y = 280,
     height = 40,
-    width = 10
+    width = 10,
+    speed = 200,
+    direction = nil
   }
 end
 
@@ -64,6 +66,8 @@ function love.update(dt)
   elseif paddle1.direction == 'down' and paddle1.y + paddle1.height < 600 then
     paddle1.y = paddle1.y + paddle1.speed * dt
   end
+
+  moveAIPaddle(dt)
 end
 
 function love.draw()
@@ -113,4 +117,17 @@ function drawScores()
   -- player 2
   width = score.font:getWidth(score.player2)
   love.graphics.printf(score.player2, 450, 10, 350, 'left')
+end
+
+function moveAIPaddle(dt)
+  local middleOfBall = ball.y + (ball.height / 2)
+  local middleOfPlayer2Paddle = paddle2.y + (paddle2.height / 2)
+  local distanceDelta = math.abs(middleOfPlayer2Paddle - middleOfBall)
+  local speed = math.min(distanceDelta, paddle2.speed * dt)
+
+  if middleOfBall > middleOfPlayer2Paddle and paddle2.y + paddle2.height < 600 then
+    paddle2.y = paddle2.y + speed
+  elseif middleOfBall < middleOfPlayer2Paddle and paddle2.y > 0 then
+    paddle2.y = paddle2.y - speed
+  end
 end

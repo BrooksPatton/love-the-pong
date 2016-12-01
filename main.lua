@@ -1,13 +1,7 @@
 function love.load()
-  ball = {
-    x = 395,
-    y = 295,
-    width = 10,
-    height = 10,
-    color = {255, 255, 255},
-    speedX = -100,
-    speedY = -100
-  }
+  gameStarted = false
+
+  ball = resetBall()
 
   net = {
     width = 5,
@@ -29,7 +23,7 @@ function love.load()
     height = 40,
     width = 10,
     direction = nil,
-    speed = 200
+    speed = 400
   }
 
   paddle2 = {
@@ -37,9 +31,11 @@ function love.load()
     y = 280,
     height = 40,
     width = 10,
-    speed = 200,
+    speed = 400,
     direction = nil
   }
+
+  gameStarted = true
 end
 
 function love.update(dt)
@@ -70,6 +66,16 @@ function love.update(dt)
     paddle1.y = paddle1.y - paddle1.speed * dt
   elseif paddle1.direction == 'down' and paddle1.y + paddle1.height < 600 then
     paddle1.y = paddle1.y + paddle1.speed * dt
+  end
+
+  if ball.x + ball.width < 0 then
+    playerScores('player2')
+    ball = resetBall()
+    increaseDifficulty()
+  elseif ball.x > 800 then
+    playerScores('player1')
+    ball = resetBall()
+    increaseDifficulty()
   end
 
   moveAIPaddle(dt)
@@ -129,10 +135,44 @@ function moveAIPaddle(dt)
   local middleOfPlayer2Paddle = paddle2.y + (paddle2.height / 2)
   local distanceDelta = math.abs(middleOfPlayer2Paddle - middleOfBall)
   local movement = math.min(distanceDelta, paddle2.speed * dt)
+  local randomNum = math.random()
 
-  if middleOfBall > middleOfPlayer2Paddle and paddle2.y + paddle2.height < 600 then
-    paddle2.y = paddle2.y + movement
-  elseif middleOfBall < middleOfPlayer2Paddle and paddle2.y > 0 then
-    paddle2.y = paddle2.y - movement
+  if randomNum > 0.35 then
+    if middleOfBall > middleOfPlayer2Paddle and paddle2.y + paddle2.height < 600 then
+      paddle2.y = paddle2.y + movement
+    elseif middleOfBall < middleOfPlayer2Paddle and paddle2.y > 0 then
+      paddle2.y = paddle2.y - movement
+    end
   end
+end
+
+function playerScores(player)
+  score[player] = score[player] + 1
+end
+
+function resetBall ()
+  local movement
+
+  if not gameStarted then
+    movement = 200
+  else
+    movement = ball.speedX
+  end
+
+  return {
+    x = 395,
+    y = 295,
+    width = 10,
+    height = 10,
+    color = {255, 255, 255},
+    speedX = movement,
+    speedY = movement
+  }
+end
+
+function increaseDifficulty()
+  local speedToIncreaseX = ball.speedX / math.abs(ball.speedX)
+  local speedToIncreaseY = ball.speedY / math.abs(ball.speedY)
+  ball.speedX = ball.speedX + (speedToIncreaseX * 50)
+  ball.speedY = ball.speedY + (speedToIncreaseY * 50)
 end
